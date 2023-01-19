@@ -45,6 +45,15 @@ def flag(spec, median_spec, chans=[1066,3552]):
 
 
 def main(args):
+    # Initial file type check
+    if args[0][-4:] == '.txt':
+        ## File list - load and replace args
+        with open(args[0], 'r') as fh:
+            filelist = fh.read()
+        args = filelist.split('\n')
+        if args[-1] == '':
+            args = args[:-1]
+            
     # Load the data
     for filename in args:
         data = np.load(filename)
