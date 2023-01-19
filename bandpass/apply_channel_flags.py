@@ -1,5 +1,10 @@
 #!/usr/bin/env casa
 
+"""
+Given a collection of CASA measurement sets, apply flags from get_channel_flags.py
+to the data using CASA's `flagdata` task.
+"""
+
 import os
 import sys
 
