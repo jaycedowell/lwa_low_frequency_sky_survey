@@ -29,7 +29,7 @@ def main(args):
                 bad.append(f"LWA{a.stand.id:03d}~LWA{b.stand.id:03d}")
                 
     # Write to disk
-    with open('baseline_flags.txt', 'r') as fh:
+    with open('baseline_flags.txt', 'w') as fh:
         fh.write(','.join(bad))
 
 
