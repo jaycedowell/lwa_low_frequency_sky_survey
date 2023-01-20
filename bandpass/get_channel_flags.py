@@ -81,7 +81,6 @@ def main(args):
         outname, _ = os.path.splitext(outname)
         outname += '_channel_flags.txt'
         with open(outname, 'w') as fh:
-            bad = [f"0:{b} for b in bad]
             fh.write(','.join([f"0:{b}" for b in bad]))
             
         tb.close()
