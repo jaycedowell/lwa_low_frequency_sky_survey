@@ -66,6 +66,7 @@ def main(args):
         bad = flag(data)
         bad.extend(list(range(50)))
         bad.sort()
+        bad = list(set(bad))
         
         # # Plots
         # fig = plt.figure()
@@ -80,7 +81,8 @@ def main(args):
         outname, _ = os.path.splitext(outname)
         outname += '_channel_flags.txt'
         with open(outname, 'w') as fh:
-            fh.write(','.join([str(b) for b in bad]))
+            bad = [f"0:{b} for b in bad]
+            fh.write(','.join([f"0:{b}" for b in bad]))
             
         tb.close()
 
