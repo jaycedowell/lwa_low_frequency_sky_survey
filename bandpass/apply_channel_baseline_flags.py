@@ -2,7 +2,7 @@
 
 """
 Given a collection of CASA measurement sets, apply flags from get_channel_flags.py
-to the data using CASA's `flagdata` task.
+and get_baseline_flags.py to the data using CASA's `flagdata` task.
 """
 
 import os
@@ -25,13 +25,17 @@ for filename in args:
     flagname = os.path.basename(filename)
     flagname, _ = os.path.splitext(flagname)
     flagname = flagname+'_channel_flags.txt'
-    if not os.path.exists(flagname):
-        print("No channel flags for %s, skipping" % filename)
-        continue
+    if os.path.exists(flagname):
+        with open(flagname, 'r') as fh:
+            flagcmd = fh.read()
+        flagdata(vis=filename, mode='manual', spw=flagcmd)
+    else:
+        print("No channel flags for %s" % filename)
         
-    with open(flagname, 'r') as fh:
-        flagcmd = fh.read()
-    flagcmd = flagcmd.split(',')
-    flagcmd = ["0:%s" % f for f in flagcmd]
-    flagcmd = ','.join(flagcmd)
-    flagdata(vis=filename, mode='manual', spw=flagcmd)
+    flagname = 'baseline_flags.txt'
+    if os.path.exists(flagname):
+        with open(flagname, 'r') as fh:
+            flagcmd = fh.read()
+        flagdata(vis=filename, mode='manual', antenna=flagcmd)
+    else:
+        print("No baselines flags for %s" % filename)
