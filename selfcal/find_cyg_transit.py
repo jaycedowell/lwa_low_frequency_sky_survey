@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Given a collection of CASA measurement sets, calculate the elevation of CygA
+above the horizon and keep only files where that value is >81 degees.
+"""
+
 import os
 import sys
 import ephem
