@@ -20,6 +20,8 @@ if args[0][-4:] == '.txt':
 for filename in args:
     if filename[-1] == '/':
         filename = filename[:-1]
+    if filename[-3:] != '.ms':
+        continue
     flagname = os.path.basename(filename)
     flagname, _ = os.path.splitext(flagname)
     flagname = flagname+'_channel_flags.txt'
