@@ -10,7 +10,7 @@ from lsl.common.stations import parse_ssmif
 def main(args):
     # Load in the SSMIF
     ssmifname = args[0]
-    station = parse_ssmif(ssmif_name)
+    station = parse_ssmif(ssmifname)
     
     # Compute the mean ARX response for all good dipoles
     for a in station.antennas:
