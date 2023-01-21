@@ -18,7 +18,10 @@ def main(args):
     print(f"Loaded {len(flags)} antenna flags")
     
     in_ant_stat = False
-    with open('SSMIF_new.txt', 'w') as oh:
+    outname = os.path.basename(ssmifname)
+    outname, outext = os.path.splitext(outname)
+    outname = outname+'_UPDATED'+outext
+    with open(outname, 'w') as oh:
         with open(ssmifname, 'r') as fh:
             for line in fh:
                 if line.startswith('ANT_STAT['):
