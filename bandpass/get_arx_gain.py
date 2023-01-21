@@ -14,7 +14,7 @@ def main(args):
     
     # Compute the mean ARX response for all good dipoles
     for a in station.antennas:
-        if a.get_status() != 33:
+        if a.status != 33:
             continue
             
         freq, resp = a.arx.response('full', dB=False)
