@@ -13,20 +13,17 @@ def main(args):
     station = parse_ssmif(ssmifname)
     
     # Compute the mean ARX response for all good dipoles
+    mean_resp = []
     for a in station.antennas:
-        if a.status != 33:
+        if a.combined_status != 33:
             continue
             
         freq, resp = a.arx.response('full', dB=False)
-        try:
-            mean_resp += resp
-            count_resp += 1
-        except NameError:
-            mean_resp = resp
-            count_resp = 1
-    mean_resp /= count_resp
+        mean_resp.append(resp)
+    mean_resp = np.array(mean_resp)
+    mean_resp = np.mean(mean_resp, axis=0)
     
-    with open('mean_arx_gain.txt', 'r') as fh:
+    with open('mean_arx_gain.txt', 'w') as fh:
         fh.write("# Freq    Gain\n")
         for f,r in zip(freq, mean_resp):
             fh.write("%f  %f\n" % (f, r))
