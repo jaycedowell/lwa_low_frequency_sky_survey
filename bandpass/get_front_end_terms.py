@@ -41,6 +41,13 @@ def main(args):
         fh.write("# Freq    IMF\n")
         for f,g in zip(freq[valid], mean_imf[valid]):
             fh.write("%f  %f\n" % (f, g))
+            
+    # Cleanup
+    for filename in ('FEE_Gain_EW.txt', 'FEE_Gain_NS.txt', 'IMF_EW.txt', 'IMF_NS.txt'):
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
 
 
 if __name__ == '__main__':
