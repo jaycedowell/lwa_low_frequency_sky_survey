@@ -19,6 +19,8 @@ def main(args):
     fig = plt.figure()
     ax = fig.gca()
     ax.scatter(ant, dly[:,0,0], marker='o')
+    ax.set_xlabel('Antenna Number')
+    ax.set_ylabel('Delay [ns]')
     plt.show()
 
 
