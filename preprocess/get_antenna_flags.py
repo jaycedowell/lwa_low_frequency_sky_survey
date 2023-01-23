@@ -10,6 +10,8 @@ import os
 import sys
 import numpy as np
 
+from lsl.common.progress import ProgressBarPlus
+
 from matplotlib import pyplot as plt
 
 
@@ -55,15 +57,66 @@ def main(args):
             args = args[:-1]
             
     # Load the data
+    pb = ProgressBarPlus(max=len(args))
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.flush()
+    
+    med_power = []
     for filename in args:
         data = np.load(filename)
         freq, spec = data['freq'][...], data['masterSpectra'][0,...]
+        
         try:
             mean_spec += spec
         except NameError:
             mean_spec = spec*1.0
+            
+        mjd = os.path.basename(filename)
+        mjd = mjd.split('_', 1)[0]
+        mjd = int(mjd, 10)
+        med_power.append([mjd, np.median(spec)])
+        
         data.close()
         
+        pb.inc()
+        sys.stdout.write(pb.show()+'\r')
+        sys.stdout.flush()
+        
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.write('\n')
+    sys.stdout.flush()
+    
+    # Process the file median power to identify bad TBW captures
+    try:
+        os.remove('bad_captures.txt')
+    except OSError:
+        pass
+        
+    med_power = np.array(med_power)
+    fig = plt.figure()
+    ax = fig.gca()
+    for mjd in np.unique(med_power[:,0]):
+        ## Find all captures on this day and fit a simple linear trend to the data
+        valid = np.where(med_power[:,0] == mjd)[0]
+        run_fit = np.polyfit(np.arange(len(valid)), med_power[valid,1], 1)
+        
+        ## Find outliers at +/- 3 sigma
+        med_power_detrened = med_power[valid,1] - np.polyval(run_fit, np.arange(len(valid)))
+        run_mean = np.mean(med_power_detrened)
+        run_std = np.std(med_power_detrened)
+        
+        ## Flag the outliers
+        bad = np.where(np.abs(med_power_detrened - run_mean)/run_std > 3)[0]
+        ax.scatter(mjd+np.arange(len(valid))/len(valid), med_power[valid,1], marker='o')
+        ax.scatter((mjd+np.arange(len(valid))/len(valid))[bad], med_power[valid[bad],1], marker='x')
+        
+        ## Save the bad captures to a file
+        with open('bad_captures.txt', 'a') as fh:
+            for b in bad:
+                fh.write(args[valid[b]]+'\n')
+                
+    plt.show()
+    
     # Compute the median spectrum
     spec = mean_spec / len(args)
     med = np.median(spec, axis=0)
