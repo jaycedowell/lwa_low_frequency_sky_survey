@@ -1,8 +1,9 @@
 #!/usr/bin/env casa
 
 """
-Give a CASA measurement set created by combine_transit_data.py, run a delay-only
-self calibration on the data using a two point sky model of CygA and CasA.
+Give a CASA measurement set created by combine_transit_data.py, run delay-only
+and amplitude-only self calibration on the data using a two point sky model
+consisting of CygA and CasA.
 """
 
 import os
@@ -34,15 +35,29 @@ for filename in args:
         filename = filename[:-1]
     if filename[-3:] != '.ms':
         continue
-    calname = os.path.basename(filename)
-    calname, _ = os.path.splitext(calname)
-    calname = calname+'_two_pt.dcal'
+        
+    # Delay calibration
+    dcalname = os.path.basename(filename)
+    dcalname, _ = os.path.splitext(dcalname)
+    dcalname = dcalname+'_two_pt.dcal'
     
     try:
-        shutil.rmtree(calname)
+        shutil.rmtree(dcalname)
     except OSError:
         pass
         
     clearcal(filename, addmodel=True)
     ft(filename, complist='two_pt_model.cl', usescratch=True)
-    gaincal(filename, calname,  uvrange='>10lambda', refant='LWA151', combine='obs,scan,field', solint='inf', solnorm=False, gaintype='K', calmode='p')
+    gaincal(filename, dcalname,  refant='LWA151', combine='obs,scan,field', solint='inf', solnorm=False, gaintype='K', calmode='p')
+    
+    # Amplitude calibration
+    gcalname = os.path.basename(filename)
+    gcalname, _ = os.path.splitext(gcalname)
+    gcalname = gcalname+'_two_pt.gcal'
+    
+    try:
+        shutil.rmtree(gcalname)
+    except OSError:
+        pass
+        
+    gaincal(filename, gcalname,  refant='LWA151', combine='obs,scan,field', solint='inf', solnorm=False, gaintype='G', calmode='a')
