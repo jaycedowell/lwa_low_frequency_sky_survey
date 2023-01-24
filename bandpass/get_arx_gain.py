@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Use data from the LWA Software Library to calculate bandpass corrections for the
+analog receivers at LWA1.
+"""
+
 import os
 import sys
 import numpy as np
@@ -23,6 +28,7 @@ def main(args):
     mean_resp = np.array(mean_resp)
     mean_resp = np.mean(mean_resp, axis=0)
     
+    # Save
     with open('mean_arx_gain.txt', 'w') as fh:
         fh.write("# Freq    Gain\n")
         for f,r in zip(freq, mean_resp):

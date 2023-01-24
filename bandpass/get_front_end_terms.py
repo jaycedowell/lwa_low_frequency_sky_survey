@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+Use data from https://github.com/cdilullo/Antenna_Impedance to calculate band-
+pass corrections for the FEE gain and the FEE-antenna impedeance mismatch factor.
+"""
+
 import os
 import sys
 import glob
