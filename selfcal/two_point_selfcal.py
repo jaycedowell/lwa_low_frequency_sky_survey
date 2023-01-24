@@ -1,5 +1,10 @@
 #!/usr/bin/env casa
 
+"""
+Give a CASA measurement set created by combine_transit_data.py, run a delay-only
+self calibration on the data using a two point sky model of CygA and CasA.
+"""
+
 import os
 import sys
 import shutil
@@ -40,4 +45,4 @@ for filename in args:
         
     clearcal(filename, addmodel=True)
     ft(filename, complist='two_pt_model.cl', usescratch=True)
-    gaincal(filename, calname, refant='LWA151', combine='obs,scan,field', solint='inf', solnorm=False, gaintype='K', calmode='p')
+    gaincal(filename, calname,  uvrange='>10lambda', refant='LWA151', combine='obs,scan,field', solint='inf', solnorm=False, gaintype='K', calmode='p')

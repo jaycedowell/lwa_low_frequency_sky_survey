@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+Visualize the delays in a .dcal measurement set created by two_point_selfcal.py
+"""
+
 import os
 import sys
 import numpy as np
