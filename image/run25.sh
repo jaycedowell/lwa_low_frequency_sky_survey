@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_PATH=`dirname ${0}`
+
 filename=${1}
 outname=`basename ${filename} | sed -e 's/\..*//g;' `
 outname=`echo "${outname}_25MHz" `
@@ -17,6 +19,7 @@ shmDir=`mktemp --tmpdir=/dev/shm -d wsclean.XXXXXX `
 cp -r ${filename} ${shmDir}
 shmname=`basename ${filename} | xargs -n1 -i{} echo "${shmDir}/{}" `
 
-wsclean -size 350 350 -scale 20amin -niter 75000 -threshold ${threshold} -weight natural -multiscale -multiscale-scale-bias 0.9 -mgain 0.6 -nonegative -joinpolarizations -pol xx,yy -joinchannels -channelrange 500 540 -no-update-model-required -fitsmask mask_350.fits -name ${outname} ${shmname} > ${outname}.log 2>&1
+export OPENBLAS_NUM_THREADS=1
+wsclean -size 350 350 -scale 20amin -niter 75000 -threshold ${threshold} -weight natural -multiscale -multiscale-scale-bias 0.9 -mgain 0.6 -nonegative -join-polarizations -pol xx,yy -channel-range 500 540 -no-update-model-required -fitsmask ${SCRIPT_PATH}/mask_350.fits -name ${outname} ${shmname} > ${outname}.log 2>&1
 
 rm -rf ${shmDir}
