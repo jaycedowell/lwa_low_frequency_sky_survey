@@ -1,6 +1,14 @@
-# Intermediate data prodcuts
+# Intermediate data products
 antenna_flags.txt
 *_channel_flags.txt
+temp_19*.gz
+wview_backup_151116.gz
+mean_arx_gain.txt
+mean_fee_ant_imf.txt
+mean_fee_gain.txt
+*.cl
+*.dcal
+*.gcal
 
 # CASA log files
 *.last
