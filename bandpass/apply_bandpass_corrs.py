@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+"""
+Given a collection of CASA measurement sets, apply bandpass corrections to the
+data.  These include:
+ * the FEE gain (get_front_end_terms.py)
+ * the FEE-antenna mismatch factor (get_front_end_terms.py)
+ * the response of the analog receivers (get_arx_gain.py)
+ * the temperature-dependent gains (get_connected_gain.py)
+"""
+
 import os
 import sys
 import numpy as np
@@ -42,8 +51,8 @@ def main(args):
             
         ## Get the frequency range of the file
         tb = table(os.path.join(filename, 'SPECTRAL_WINDOW'), ack=False)
-        freq = np.array([], dtype=numpy.float64)
-        for freqIF in spw.col('CHAN_FREQ'):
+        freq = np.array([], dtype=np.float64)
+        for freqIF in tb.col('CHAN_FREQ'):
             freq = np.concatenate([freq, freqIF])
         tb.close()
         
@@ -51,10 +60,12 @@ def main(args):
         corr = corr / fee(freq) / imf(freq) / arx(freq)
         corr.shape = (1,)+corr.shape+(1,)
         
-        ## Load in the actual data
+        ## Load in the actual data and apply the corrections
         tb = table(filename, readonly=False, ack=False)
         data = tb.getcol('DATA')
         data *= corr
+        
+        ## Save back to DATA
         tb.putcol('DATA', data)
         tb.close()
 
