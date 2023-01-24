@@ -10,7 +10,7 @@ import subprocess
 def main(args):
     # Gather up the list of antenna and FEE files to use
     ant_measurements = glob.glob('./Antenna_Impedance/Data/LWA1/Antenna-Antenna/*.s2p')
-    fee_measurements = glob.glob('./Antenna_Impedance/Data/FEE_Bulk_Measurements/S2P/*.s2p')
+    fee_measurements = glob.glob('./Antenna_Impedance/Data/FEE/S2P/*.s2p')
     
     # Process NS and EW separately
     for side in ('A', 'B'):
