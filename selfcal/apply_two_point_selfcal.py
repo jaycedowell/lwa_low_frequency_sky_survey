@@ -79,12 +79,12 @@ def main(args):
             data[i,:,0] /= np.exp(2j*np.pi*(freq/1e9*(dly[v1,0,0]-dly[v2,0,0])))
             data[i,:,1] /= np.exp(2j*np.pi*(freq/1e9*(dly[v1,0,1]-dly[v2,0,1])))
             
-            ### Gain
-            v1 = np.where(gant == ant1[i])[0]
-            v2 = np.where(gant == ant2[i])[0]
-            
-            data[i,:,0] /= gai[v1,0,0]*gai[v2,0,0]
-            data[i,:,1] /= gai[v1,0,1]*gai[v2,0,1]
+            #### Gain
+            #v1 = np.where(gant == ant1[i])[0]
+            #v2 = np.where(gant == ant2[i])[0]
+            #
+            #data[i,:,0] /= gai[v1,0,0]*gai[v2,0,0]
+            #data[i,:,1] /= gai[v1,0,1]*gai[v2,0,1]
             
         ## Save back to DATA
         tb.putcol('DATA', data)
