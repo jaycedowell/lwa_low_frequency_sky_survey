@@ -15,7 +15,7 @@ from reproject import reproject_to_healpix
 def main(args):
     for filename in args:
         ## Load in the data and trim off the degenerate axes
-        hdu = astrofits.open(filename)
+        hdu = astrofits.open(filename, mode='readonly')
         hdr = hdu[0].header
         hdr['NAXIS'] = 2
         for axis in (3, 4):
@@ -46,7 +46,10 @@ def main(args):
             t.meta['NSIDE'] = 256
             t.meta['INDXSCHM'] = 'IMPLICIT'
             for key in ('TELESCOP', 'OBSERVER', 'OBJECT', 'ORIGIN', 'DATE-OBS', 'EQUINOX', 'SPECSYS'):
-                t.meta[key] = hdr[key]
+                try:
+                    t.meta[key] = hdr[key]
+                except KeyError:
+                    pass
             for key in hdr.keys():
                 if key[:3] == 'WSC':
                     t.meta[key] = hdr[key]
