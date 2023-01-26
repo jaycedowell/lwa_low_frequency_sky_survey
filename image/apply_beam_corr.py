@@ -105,6 +105,7 @@ def main(args):
             
         # Compute the beam
         beam = func(aa.az.to('deg').value, aa.alt.to('deg').value)
+        beam = beam.astype(np.float32)
         beam.shape = (1,1)+beam.shape
         
         # Save to the beam to a new exention and write everything to disk
@@ -113,7 +114,7 @@ def main(args):
             hdu[1] = beam_hdu
         except IndexError:
             hdu.append(beam_hdu)
-        hdu[0].header['BTYPE'] = 'Weight'
+        hdu[1].header['BTYPE'] = 'Weight'
         hdu[0].header['HISTORY'] = f"Beam pattern correction for '{str(cname)}'"
         hdu.flush()
         hdu.close()
