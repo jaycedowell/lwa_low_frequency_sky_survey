@@ -16,6 +16,7 @@ from astropy.coordinates import EarthLocation, AltAz
 from lsl.common.paths import DATA as dataPath
 from lsl.imaging.utils import ImgWPlus
 from lsl.common.stations import lwa1
+from lsl.common.progress import ProgressBarPlus
 
 
 LWA1 = EarthLocation(str(lwa1.lon), str(lwa1.lat), height=lwa1.elev)
@@ -83,6 +84,10 @@ def load_beam_pattern(frequency, pol, include_empirical=True):
 
 
 def main(args):
+    pb = ProgressBarPlus(max=len(args))
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.flush()
+    
     cache = {}
     for filename in args:
         # Figure out which polarization we are dealing with based on the filename
@@ -125,6 +130,14 @@ def main(args):
         hdu[0].header['HISTORY'] = f"Beam pattern correction for '{str(cname)}'"
         hdu.flush()
         hdu.close()
+        
+        pb.inc()
+        sys.stdout.write(pb.show()+'\r')
+        sys.stdout.flush()
+        
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 if __name__ == '__main__':

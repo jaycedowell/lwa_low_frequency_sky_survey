@@ -7,12 +7,20 @@ HEALpix.
 
 import os
 import sys
+
 from astropy.io import fits as astrofits
 from astropy.table import Table as AstroTable
+
 from reproject import reproject_to_healpix
+
+from lsl.common.progress import ProgressBarPlus
 
 
 def main(args):
+    pb = ProgressBarPlus(max=len(args))
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.flush()
+    
     for filename in args:
         ## Load in the data and trim off the degenerate axes
         hdu = astrofits.open(filename, mode='readonly')
@@ -60,6 +68,14 @@ def main(args):
             outname, _ = os.path.splitext(outname)
             outname += '_heal'+tag+'.fits'
             t.write(outname)
+            
+        pb.inc()
+        sys.stdout.write(pb.show()+'\r')
+        sys.stdout.flush()
+        
+    sys.stdout.write(pb.show()+'\r')
+    sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 if __name__ == '__main__':
