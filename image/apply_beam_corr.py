@@ -22,6 +22,13 @@ LWA1 = EarthLocation(str(lwa1.lon), str(lwa1.lat), height=lwa1.elev)
 
 
 def load_beam_pattern(frequency, pol, include_empirical=True):
+    """
+    Return a function that caclulcates the beam pattern of an LWA dipole for a
+    given azimuth/elevation (in degrees) for a given frequency/polarization.
+    
+    .. note:: This is based on the `plotAntenna.py` script from LSL.
+    """
+    
     if pol not in ('XX', 'YY'):
         raise ValueError(f"Unknown polarization '{pol}'")
         
