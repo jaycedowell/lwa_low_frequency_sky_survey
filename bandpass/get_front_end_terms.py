@@ -14,15 +14,22 @@ import subprocess
 
 def main(args):
     # Gather up the list of antenna and FEE files to use
-    ant_measurements = glob.glob('./Antenna_Impedance/Data/LWA1/Antenna-Antenna/*.s2p')
-    fee_measurements = glob.glob('./Antenna_Impedance/Data/FEE/S2P/*.s2p')
-    
+    ant_measurements = glob.glob('./Antenna_Impedance/Data/LWA1/Dipole-Dipole/*.s2p')
+    fee_measurements = glob.glob('./Antenna_Impedance/Data/FEE/*/*')
+
     # Process NS and EW separately
-    for side in ('A', 'B'):
-        cmd = [sys.executable, './Antenna_Impedance/compute_IMF.py', '-n', '-s', '-a']
-        cmd.extend(ant_measurements)
-        cmd.append('--')
+    for side, output in zip(('A', 'B'), ('FEE_S11_NS.npz', 'FEE_S11_EW.npz')):
+        # This command makes the FEE ouput .npz files with S11
+        cmd = [sys.executable, './Antenna_Impedance/Data/FEE/read_FEE_S_params.py', '-n', '-s']
         cmd.extend(list(filter(lambda x: x.find(f"-{side}_") != -1, fee_measurements)))
+        subprocess.check_call(cmd)
+
+        # This command reads in the output files along with the single antenna measurments
+        # to compute the IMF correction
+        cmd = [sys.executable, './Antenna_Impedance/compute_IMF.py', '-n', '-s']
+        cmd.extend(output)
+        cmd.append('--')
+        cmd.extend(list(filter(lambda x: x.find(f"-{side}_") != -1, ant_measurements)))
         subprocess.check_call(cmd)
         
     # Get the mean FEE gain
